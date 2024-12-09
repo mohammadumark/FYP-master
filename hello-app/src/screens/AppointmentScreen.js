@@ -46,17 +46,16 @@ const AppointmentScreen = ({ route, navigation }) => {
     const appointmentData = {
       name,
       doctorName: doctorDetails?.username || "Unknown",
+      doctorId: doctorDetails?._id, // Include the doctorId here
       date: selectedDate,
       time: selectedTime,
       location: location || doctorDetails?.hospitalName || "Unknown",
       message,
       patientId,
     };
-
+  
     console.log("Appointment Data:", appointmentData); // Log data for debugging
-
-    setIsSubmitting(true); // Show loader while submitting
-
+  
     try {
       const response = await fetch("http://10.0.2.2:5001/api/appointments", {
         method: "POST",
@@ -65,24 +64,25 @@ const AppointmentScreen = ({ route, navigation }) => {
         },
         body: JSON.stringify(appointmentData),
       });
-
+  
+      // Check if the response is OK (status 2xx)
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await response.text(); // Get error response text
         throw new Error(`Error: ${response.statusText} - ${errorText}`);
       }
-
+  
+      // Parse the response JSON
       const data = await response.json();
       console.log("Appointment created:", data);
-
+  
+      // Show success message or navigate to another screen
       Alert.alert("Success", "Appointment created successfully!");
-      navigation.goBack(); // Go back to the previous screen after success
     } catch (error) {
       console.error("Error creating appointment:", error);
       Alert.alert("Error", `Failed to create appointment: ${error.message}`);
-    } finally {
-      setIsSubmitting(false); // Hide loader after submission
     }
   };
+  
 
   if (isLoading) {
     return (

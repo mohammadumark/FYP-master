@@ -8,6 +8,7 @@ router.post("/", async (req, res) => {
     const {
       name,
       doctorName,
+      doctorId, // Get doctorId from the request body
       date,
       time,
       location,
@@ -15,7 +16,7 @@ router.post("/", async (req, res) => {
       patientId,
     } = req.body;
 
-    if (!name || !doctorName || !date || !time || !patientId) {
+    if (!name || !doctorName || !doctorId || !date || !time || !patientId) {
       return res.status(400).json({ error: "Please provide all required fields." });
     }
 
@@ -23,6 +24,7 @@ router.post("/", async (req, res) => {
     const newAppointment = new Appointment({
       name,
       doctorName,
+      doctorId, // Store the doctorId
       date,
       time,
       location,
