@@ -11,6 +11,7 @@ export default function TopSpecialist({ navigation }) {
       setIsLoading(true);
       const response = await fetch("http://10.0.2.2:5000/api/doctors");
       const data = await response.json();
+      console.log(data); // Check the structure of the response
       setDoctors(data);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch doctors data.");
@@ -18,7 +19,7 @@ export default function TopSpecialist({ navigation }) {
       setIsLoading(false);
     }
   };
-
+  
   const refreshDoctors = async () => {
     try {
       setIsRefreshing(true);
@@ -37,7 +38,17 @@ export default function TopSpecialist({ navigation }) {
       style={styles.doctorCard}
       onPress={() => navigation.navigate("DoctorDetails", { doctorId: item._id })}
     >
-      <Image style={styles.profilePicture} source={{ uri: item.profilePicture }} />
+ <Image
+  style={styles.profilePicture}
+  source={{
+    uri: item.profilePicture 
+      ? `http://10.0.2.2:5000${item.profilePicture}` 
+      : "https://via.placeholder.com/64",
+  }}
+  onError={() => console.log(`Failed to load image for ${item.username}`)}
+/>
+
+
       <View style={styles.doctorInfo}>
         <Text style={styles.doctorName}>{item.username}</Text>
         <Text style={styles.doctorSpecialty}>{item.specialty || "Specialty not specified"}</Text>
