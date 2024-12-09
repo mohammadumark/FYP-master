@@ -9,8 +9,6 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { createAppointment } from "../../RTKBackend/ApiSlices/appointmentSlice"; // Import the Redux action
 
 const AppointmentScreen = ({ route, navigation }) => {
   const { doctorId, selectedDate, selectedTime, selectedDay } = route.params;
@@ -20,21 +18,20 @@ const AppointmentScreen = ({ route, navigation }) => {
   const [location, setLocation] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const dispatch = useDispatch();
-  const appointmentState = useSelector((state) => state.appointment);
-
+  // Fetch doctor details from the API
   const fetchDoctorDetails = async (doctorId) => {
     try {
       const response = await fetch(
         `http://10.0.2.2:5000/api/doctors/${doctorId}`
       );
       const data = await response.json();
-      setDoctorDetails(data); // Set doctor details fetched from the API
+      setDoctorDetails(data);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch doctor details.");
     } finally {
-      setIsLoading(false); // Set loading to false after API request completes
+      setIsLoading(false);
     }
   };
 
@@ -44,19 +41,47 @@ const AppointmentScreen = ({ route, navigation }) => {
     }
   }, [doctorId]);
 
-  const handleAppointmentRequest = () => {
+  // Handle appointment creation
+  const handleAppointmentRequest = async () => {
     const appointmentData = {
-      doctorId,
-      patientId,
       name,
-      doctorName: doctorDetails?.username, // Use doctorDetails safely with optional chaining
+      doctorName: doctorDetails?.username || "Unknown",
       date: selectedDate,
       time: selectedTime,
-      location: location || doctorDetails?.hospitalName, // Default to doctorDetails if no location provided
+      location: location || doctorDetails?.hospitalName || "Unknown",
       message,
+      patientId,
     };
 
-    dispatch(createAppointment(appointmentData));
+    console.log("Appointment Data:", appointmentData); // Log data for debugging
+
+    setIsSubmitting(true); // Show loader while submitting
+
+    try {
+      const response = await fetch("http://10.0.2.2:5001/api/appointments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(appointmentData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error: ${response.statusText} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log("Appointment created:", data);
+
+      Alert.alert("Success", "Appointment created successfully!");
+      navigation.goBack(); // Go back to the previous screen after success
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      Alert.alert("Error", `Failed to create appointment: ${error.message}`);
+    } finally {
+      setIsSubmitting(false); // Hide loader after submission
+    }
   };
 
   if (isLoading) {
@@ -128,9 +153,10 @@ const AppointmentScreen = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter Location"
-          value={location || doctorDetails?.hospitalName} // Safely use doctorDetails
+          value={location || doctorDetails?.hospitalName}
           onChangeText={setLocation}
         />
+
         {/* Message Input */}
         <Text style={styles.label}>Message</Text>
         <TextInput
@@ -146,8 +172,13 @@ const AppointmentScreen = ({ route, navigation }) => {
         <TouchableOpacity
           style={styles.button}
           onPress={handleAppointmentRequest}
+          disabled={isSubmitting} // Disable button while submitting
         >
-          <Text style={styles.buttonText}>Request Appointment</Text>
+          {isSubmitting ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Request Appointment</Text>
+          )}
         </TouchableOpacity>
       </View>
     </ScrollView>

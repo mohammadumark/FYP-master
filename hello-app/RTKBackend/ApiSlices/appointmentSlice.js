@@ -5,7 +5,7 @@ export const createAppointment = createAsyncThunk(
   'appointment/createAppointment',
   async (appointmentData, { rejectWithValue }) => {
     try {
-      const response = await fetch('http://10.0.2.2:5000/api/appointments', {
+      const response = await fetch('http://192.168.137.1:5001/api/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

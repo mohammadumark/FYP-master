@@ -1,28 +1,46 @@
-// routes/appointmentRoutes.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Appointment = require('../models/Appointment');
+const Appointment = require("../models/Appointment");
 
-router.post('/appointments', async (req, res) => {
+// Create a new appointment
+router.post("/", async (req, res) => {
   try {
-    const { doctorId, patientId, name, doctorName, date, time, location, message } = req.body;
-
-    const newAppointment = new Appointment({
-      doctorId,
-      patientId,
+    const {
       name,
       doctorName,
       date,
       time,
       location,
       message,
+      patientId,
+    } = req.body;
+
+    if (!name || !doctorName || !date || !time || !patientId) {
+      return res.status(400).json({ error: "Please provide all required fields." });
+    }
+
+    // Create a new appointment
+    const newAppointment = new Appointment({
+      name,
+      doctorName,
+      date,
+      time,
+      location,
+      message,
+      patientId,
     });
 
-    await newAppointment.save();
-    res.status(201).json({ message: 'Appointment created successfully', data: newAppointment });
+    // Save the appointment to the database
+    const savedAppointment = await newAppointment.save();
+
+    // Respond with success
+    res.status(201).json({
+      message: "Appointment created successfully.",
+      appointment: savedAppointment,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error creating appointment', error: error.message });
+    console.error("Error creating appointment:", error);
+    res.status(500).json({ error: "Failed to create appointment." });
   }
 });
 
