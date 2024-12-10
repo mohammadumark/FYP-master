@@ -52,6 +52,7 @@ const AppointmentScreen = ({ route, navigation }) => {
       location: location || doctorDetails?.hospitalName || "Unknown",
       message,
       patientId,
+      status: "Pending", // Set the default status as "Pending"
     };
   
     console.log("Appointment Data:", appointmentData); // Log data for debugging

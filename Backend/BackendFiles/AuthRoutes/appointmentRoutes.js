@@ -1,3 +1,4 @@
+// Appointment route
 const express = require("express");
 const router = express.Router();
 const Appointment = require("../models/Appointment");
@@ -8,7 +9,7 @@ router.post("/", async (req, res) => {
     const {
       name,
       doctorName,
-      doctorId, // Get doctorId from the request body
+      doctorId,
       date,
       time,
       location,
@@ -20,11 +21,10 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Please provide all required fields." });
     }
 
-    // Create a new appointment
     const newAppointment = new Appointment({
       name,
       doctorName,
-      doctorId, // Store the doctorId
+      doctorId,
       date,
       time,
       location,
@@ -32,10 +32,8 @@ router.post("/", async (req, res) => {
       patientId,
     });
 
-    // Save the appointment to the database
     const savedAppointment = await newAppointment.save();
 
-    // Respond with success
     res.status(201).json({
       message: "Appointment created successfully.",
       appointment: savedAppointment,
@@ -45,6 +43,37 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: "Failed to create appointment." });
   }
 });
+
+// Update appointment status (accepted/cancelled)
+router.patch("/:appointmentId/status", async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const { status } = req.body; // accepted or cancelled
+
+    if (!["accepted", "cancelled"].includes(status)) {
+      return res.status(400).json({ error: "Invalid status value." });
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { status },
+      { new: true } // Return the updated appointment
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ error: "Appointment not found." });
+    }
+
+    res.status(200).json({
+      message: `Appointment ${status} successfully.`,
+      appointment: updatedAppointment,
+    });
+  } catch (error) {
+    console.error("Error updating appointment status:", error);
+    res.status(500).json({ error: "Failed to update appointment status." });
+  }
+});
+
 // Fetch appointments by doctorId
 router.get("/:doctorId", async (req, res) => {
   try {
@@ -61,6 +90,5 @@ router.get("/:doctorId", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch appointments." });
   }
 });
-
 
 module.exports = router;
