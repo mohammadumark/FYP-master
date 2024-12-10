@@ -23,10 +23,10 @@ const UserSchema = new mongoose.Schema({
     otpExpiry: {
         type: Date
     },
-    hasCheckedSymptoms:
-     { type: Boolean,
-     default: false },
-
-
+    symptomsChecked: {
+        type: Boolean,
+        default: false,  // Default to false, meaning the user hasn't checked symptoms
+    },
 });
+
 module.exports = mongoose.model('PatientUser', UserSchema);

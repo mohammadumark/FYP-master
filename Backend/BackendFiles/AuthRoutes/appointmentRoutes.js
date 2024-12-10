@@ -45,5 +45,22 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: "Failed to create appointment." });
   }
 });
+// Fetch appointments by doctorId
+router.get("/:doctorId", async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const appointments = await Appointment.find({ doctorId });
+
+    if (!appointments.length) {
+      return res.status(404).json({ error: "No appointments found for this doctor." });
+    }
+
+    res.status(200).json(appointments);
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    res.status(500).json({ error: "Failed to fetch appointments." });
+  }
+});
+
 
 module.exports = router;

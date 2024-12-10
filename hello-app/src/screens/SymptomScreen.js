@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Checkbox from 'expo-checkbox';
-import { useMatchSymptomsMutation } from '../../RTKBackend/ApiSlices/SymtomsSlice';
+import { useEmail } from './DataContext';
+import { useMatchSymptomsMutation} from '../../RTKBackend/ApiSlices/SymptomApliSlice';
 import { StyleSheet, Text, Alert, View, SafeAreaView, StatusBar, Platform, Image, Pressable } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SymptomsScreen({ }) {
     const [isChecked, setIsChecked] = useState(false);
@@ -13,44 +14,44 @@ export default function SymptomsScreen({ }) {
     const [isChecked5, setIsChecked5] = useState(false);
     const [isChecked6, setIsChecked6] = useState(false);
     const [isChecked7, setIsChecked7] = useState(false);
-    const [matchSymptoms, { isLoading, isSuccess, error }] = useMatchSymptomsMutation();
+    const [isChecked8, setIsChecked8] = useState(false);
+    const [matchSymptoms, { isLoading, isSuccess, error, data }] = useMatchSymptomsMutation();
     const navigation = useNavigation();
-
-    
-
+    const {email}=useEmail();
     const handleSubmit = async () => {
-        const selectedSymptoms = [];
-        if (isChecked) selectedSymptoms.push("Weakness and Tiredness");
-        if (isChecked2) selectedSymptoms.push("Pain in the Abdomen");
-        if (isChecked3) selectedSymptoms.push("Swelling of the abdomen due to a build-up of fluid");
-        if (isChecked4) selectedSymptoms.push("Pain in the right shoulder");
-        if (isChecked5) selectedSymptoms.push("Appetite loss and feeling sick");
-        if (isChecked6) selectedSymptoms.push("Weight loss");
-        if (isChecked7) selectedSymptoms.push("Yellowing of the skin and eyes");
+        
+        const selectedSymptoms = [
+          isChecked ? 'Weakness and Tiredness' : null,
+          isChecked2 ? 'Pain in the Abdomen' : null,
+          isChecked3 ? 'Swelling of the abdomen due to a build-up of fluid' : null,
+          isChecked4 ? 'Pain in the right shoulder' : null,
+          isChecked5 ? 'Appetite loss and feeling sick' : null,
+          isChecked6 ? 'Back Pain' : null,
+          isChecked7 ? 'Gestic Issue' : null,
+          isChecked8 ? 'Yellowing of the skin and eyes' : null
 
-        // Check if any symptoms are selected
-        if (selectedSymptoms.length === 0) {
-            Alert.alert("Please select at least one symptom.");
-            return;
-        }
-        // Send selected symptoms to the backend
-        try {
-            const result = await matchSymptoms(selectedSymptoms).unwrap();
-            if (result.matched) {
-                await AsyncStorage.setItem('symptomsViewed', 'true'); 
-                navigation.navigate("SymptomMatch", { matchedSymptoms: result.matchedSymptom });
+        ].filter(symptom => symptom !== null);
+       
+        if (selectedSymptoms.length > 0) {
+          try {
+            
+            const response = await matchSymptoms({ email, symptoms: selectedSymptoms });  // Replace with actual email
+            // console.log('Matched Symptoms Response:', JSON.stringify(response.data, null, 2)); // Log the response to check the API result
+            if (response?.data?.matchedSymptoms.length>0) {
+                // Navigate to SymptomsMatched and pass the matched symptoms
+                navigation.navigate('SymptomMatch', {
+                    matchedSymptoms: response.data.matchedSymptoms,
+                });
+            } else {
+                navigation.navigate('SymptomNotMatch');
             }
-            else {
-                Alert.alert("No match found for the selected symptoms.");
-                navigation.navigate("SymptomNotMatch")
-            }
+          } catch (err) {
+            console.error('Error while submitting symptoms:', err);
+          }
+        } else {
+          Alert.alert('Please select at least one symptom');
         }
-        catch (error) {
-            console.error("Error details:", error);
-            Alert.alert("Error occurred while matching symptoms: ", error.message);
-        }
-    }
-
+      };
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="auto" />
@@ -85,7 +86,7 @@ export default function SymptomsScreen({ }) {
                             onValueChange={setIsChecked3}
                             color={isChecked3 ? '#4630EB' : undefined}
                             style={styles.checkbox} />
-                        <Text style={styles.label}>Swelling of the abdomen due to a build-up of fluid </Text>
+                        <Text style={styles.label}>Swelling of the abdomen due to a build-up of fluid</Text>
                     </View>
                     <View style={styles.checkboxheader}>
                         <Checkbox
@@ -109,12 +110,20 @@ export default function SymptomsScreen({ }) {
                             onValueChange={setIsChecked6}
                             color={isChecked6 ? '#4630EB' : undefined}
                             style={styles.checkbox} />
-                        <Text style={styles.label}>Weight loss</Text>
+                        <Text style={styles.label}>Back Pain</Text>
                     </View>
                     <View style={styles.checkboxheader}>
                         <Checkbox
                             value={isChecked7}
                             onValueChange={setIsChecked7}
+                            color={isChecked7 ? '#4630EB' : undefined}
+                            style={styles.checkbox} />
+                        <Text style={styles.label}>Gestic Issue</Text>
+                    </View>
+                    <View style={styles.checkboxheader}>
+                        <Checkbox
+                            value={isChecked8}
+                            onValueChange={setIsChecked8}
                             color={isChecked7 ? '#4630EB' : undefined}
                             style={styles.checkbox} />
                         <Text style={styles.label}>Yellowing of the skin and eyes </Text>

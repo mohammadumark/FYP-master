@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { apiSlice } from '../../RTKBackend/ApiSlices/RegisterApiSlice';
-import { symptomApi } from '../ApiSlices/SymtomsSlice';
+import { symptomApi} from '../ApiSlices/SymptomApliSlice';
 import { imageApi } from '../ApiSlices/UploadImagesSlice';
 export  default  store = configureStore({
     reducer: {

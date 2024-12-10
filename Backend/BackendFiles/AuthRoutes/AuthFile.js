@@ -154,7 +154,7 @@ router.post('/login', async (req, res) => {
 
         await loginDetail.save();
 
-        res.json({ token });
+        res.json({ token , symptomsChecked: user.symptomsChecked, });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
@@ -176,28 +176,13 @@ async function sendVerificationCode(user, code) {
         from: process.env.EMAIL_USER,
         to: user.email,
         subject: 'Liver Tumor Vision-->Email Verification Code',
-        html: `<h2>Hello ${user.name},</h2><p>Your verification code is: <strong>${code}</strong></p>`,
+        html: `
+            <h2>Hello ${user.name},</h2>
+            <p>Your verification code is: <strong>${code}</strong></p>
+        `,
     };
         await transporter.sendMail(mailOptions);
         console.log('Verification email sent successfully');
     
 }
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

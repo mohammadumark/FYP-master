@@ -2,10 +2,8 @@ import { StatusBar, } from 'expo-status-bar';
 import { StyleSheet, ScrollView, Text, View, SafeAreaView, Alert, TextInput, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useLoginUserMutation } from '../../RTKBackend/ApiSlices/RegisterApiSlice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEmail } from './DataContext';
-import { useFetchNameQuery } from '../../RTKBackend/ApiSlices/RegisterApiSlice';
-
 
 import React from 'react';
 
@@ -15,51 +13,44 @@ export default function Login() {
   const [password, setPassword] = React.useState('');
   const [loginUser] = useLoginUserMutation();
   const { saveEmail } = useEmail();
-  // Fetch user data using the email
-  const { data, isLoading, isError } = useFetchNameQuery(email, {
-    skip: !email, // Skip the query if email is not available
-  });
   const handleLogin = async () => {
-    if (!email || !password) {
+
+    if (!email && !password) {
       Alert.alert("Error Message", "Fields Must not be Empty");
       return;
     }
-  
     if (!/^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-      Alert.alert("Error Message", "Enter valid email address");
+      Alert.alert("Error Message", "Enter valid email address")
       return;
     }
-  
     try {
       const user = { email, password };
-      const response = await loginUser(user).unwrap(); // Assuming loginUser works with RTK queries
-  
+      const response = await loginUser(user).unwrap();
       if (response) {
-        saveEmail(email); // Save email for future use
+        const { symptomsChecked } = response; 
+        saveEmail(email); // Use the state email directly here
         console.log("email is", email);
-  
-        // Wait for the name data to be fetched before navigation
-        if (data) {
-          console.log("User data fetched:", data);
-          if (data.hasCheckedSymptoms) {
-            navigation.navigate('HomeScreen', { email }); // Navigate to HomeScreen
-          } else {
-            navigation.navigate('SymptomCheck', { email }); // Navigate to SymptomCheck
-          }
-        } else {
-          // Fallback in case data isn't available yet
-          Alert.alert("Error", "Failed to fetch user data");
+        console.log("Login response:", symptomsChecked);
+
+        if (symptomsChecked) {
+          navigation.navigate("Home");
+          console.log("email is",email );
+          Alert.alert("LIVER TUMOR VISION", "Login Succesfully");
+          console.log('Login successful', response);
+        }else {
+        navigation.navigate('SymptomCheck');
         }
-  
-        Alert.alert("LIVER TUMOR VISION", "Login Successful");
+        console.log("email is",email );
+        Alert.alert("LIVER TUMOR VISION", "Login Succesfully");
         console.log('Login successful', response);
+
       }
     } catch (err) {
       console.error('Login failed', err);
-      Alert.alert("Enter Valid ");
+      // const errorMessage = err?.data?.msg || "Enter valid credentials.";
+      Alert.alert("Enter Valid Credentials")
     }
   };
-  
   return (
     <ScrollView keyboardShouldPersistTaps="always">
       <View style={styles.frame1} >
