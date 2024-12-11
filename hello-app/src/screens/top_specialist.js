@@ -9,7 +9,7 @@ export default function TopSpecialist({ navigation }) {
   const fetchDoctors = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("http://10.0.2.2:5000/api/doctors");
+      const response = await fetch("http://192.168.137.1:5000/api/doctorss");
       const data = await response.json();
       console.log(data); // Check the structure of the response
       setDoctors(data);
@@ -42,7 +42,7 @@ export default function TopSpecialist({ navigation }) {
   style={styles.profilePicture}
   source={{
     uri: item.profilePicture 
-      ? `http://10.0.2.2:5000${item.profilePicture}` 
+      ? `http://192.168.137.1:5000${item.profilePicture}` 
       : "https://via.placeholder.com/64",
   }}
   onError={() => console.log(`Failed to load image for ${item.username}`)}

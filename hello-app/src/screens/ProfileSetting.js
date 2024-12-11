@@ -3,6 +3,10 @@ import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
+import { useFetchNameQuery } from '../../RTKBackend/ApiSlices/RegisterApiSlice';
+import { useEmail } from './DataContext';
+import { useAddUserInfoMutation } from '../../RTKBackend/ApiSlices/ProfileInfoSlice';
+
 import {
     StyleSheet,
     Text,
@@ -13,33 +17,66 @@ import {
     Platform,
     Image,
     TouchableOpacity,
-    Pressable
+    Pressable,
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 
 export default function ProfileSetting() {
     const navigation = useNavigation();
     const [username, setUsername] = React.useState('');
     const [gender, setGender] = React.useState('');
-    const [bloodGroup, setBloodGroup] = React.useState('');
+    const [blood, setBloodGroup] = React.useState('');
     const [height, setHeight] = React.useState('');
     const [weight, setWeight] = React.useState('');
     const [age, setAge] = React.useState('');
     const [date, setDate] = React.useState(new Date());
     const [showPicker, setShowPicker] = React.useState(false);
+    const { email } = useEmail();
+
+    const { data: nameData } = useFetchNameQuery(email, {
+        skip: !email,
+    });
+    const name = nameData?.name || "User";
+
+    React.useEffect(() => {
+        setUsername(name);
+    }, [name]);
+
+    const [addUserInfo, { isLoading, isSuccess, isError, error }] = useAddUserInfoMutation();
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
-        setShowPicker(Platform.OS === 'ios'); // iOS should keep picker open
+        setShowPicker(Platform.OS === 'ios');
         setDate(currentDate);
-
-        // Debugging - Log the selected date
-        // console.log('Selected Date:', currentDate);
     };
 
-    // Function to format date as string
     const formatDate = (date) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return date.toLocaleDateString('en-US', options);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`; // Use backticks for template literals
+    };
+    
+
+    const handleSave = () => {
+        const userInfo = {
+            username,
+            gender,
+            dob: date.toISOString(),
+            age,
+            weight,
+            height,
+            blood,
+            email,
+        };
+
+        addUserInfo(userInfo);
+        if(addUserInfo(userInfo))
+        {
+            alert("succesfully saved details")
+            navigation.navigate('HOME');
+        }
     };
 
     return (
@@ -81,6 +118,7 @@ export default function ProfileSetting() {
                         style={styles.input}
                         onChangeText={setUsername}
                         value={username}
+                        editable={false}
                     />
                 </View>
                 <View style={styles.profileSetting}>
@@ -97,19 +135,18 @@ export default function ProfileSetting() {
                         <TextInput
                             style={styles.input}
                             value={formatDate(date)}
-                            editable={false} // Ensure the input is not editable directly
+                            editable={false}
                         />
                     </TouchableOpacity>
                     {showPicker && (
                         <DateTimePicker
-                            //   testID="dateTimePicker"
                             value={date}
                             mode="date"
                             display="default"
                             onChange={(event, selectedDate) => {
                                 onChange(event, selectedDate);
                                 if (Platform.OS === 'android') {
-                                    setShowPicker(false); // Close picker after selection on Android
+                                    setShowPicker(false);
                                 }
                             }}
                         />
@@ -120,16 +157,18 @@ export default function ProfileSetting() {
                         <Text style={styles.settingcurrentText}>Age</Text>
                         <TextInput
                             style={styles.input2}
-                            onChangeText={setGender}
-                            value={gender}
+                            onChangeText={setAge}
+                            value={age}
+                            keyboardType="numeric"
                         />
                     </View>
                     <View style={styles.profileSetting2}>
                         <Text style={styles.settingcurrentText}>Weight</Text>
                         <TextInput
                             style={styles.input2}
-                            onChangeText={setGender}
-                            value={gender}
+                            onChangeText={setWeight}
+                            value={weight}
+                            keyboardType="numeric"
                         />
                     </View>
                 </View>
@@ -138,26 +177,32 @@ export default function ProfileSetting() {
                         <Text style={styles.settingcurrentText}>Height</Text>
                         <TextInput
                             style={styles.input2}
-                            onChangeText={setGender}
-                            value={gender}
+                            onChangeText={setHeight}
+                            value={height}
+                            keyboardType="numeric"
                         />
                     </View>
                     <View style={styles.profileSetting2}>
-                        <Text style={styles.settingcurrentText}>Blood</Text>
+                        <Text style={styles.settingcurrentText}>Blood Group</Text>
                         <TextInput
                             style={styles.input2}
-                            onChangeText={setGender}
-                            value={gender}
+                            onChangeText={setBloodGroup}
+                            value={blood}
                         />
                     </View>
                 </View>
-                <Pressable onPress={() => navigation.navigate('HOME')} style={styles.profileSettings}>
-                    <Text style={styles.profileSettingsText}>Save</Text>
+                <Pressable onPress={handleSave} style={styles.profileSettings}>
+                    {isLoading ? (
+                        <ActivityIndicator size="small" color="#fff" />
+                    ) : (
+                        <Text style={styles.profileSettingsText}>Save</Text>
+                    )}
                 </Pressable>
             </View>
         </SafeAreaView>
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         height: '100%',
@@ -165,7 +210,7 @@ const styles = StyleSheet.create({
     },
     historyHeader: {
         height: '14%',
-    marginTop:"5%"
+        marginTop: '5%',
     },
     historyHeaderdata: {
         height: '40%',
@@ -216,8 +261,8 @@ const styles = StyleSheet.create({
     },
     profileSetting2: {
         marginTop: '4%',
-        width: "40%",
-        marginLeft: "5%"
+        width: '40%',
+        marginLeft: '5%',
     },
     input: {
         height: 50,
@@ -250,27 +295,20 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     AgeWeight: {
-        flexDirection: "row",
-        width: "100%",
+        flexDirection: 'row',
+        width: '100%',
     },
-    profileSettings:{
-        height:"5%",
-        width:"30%",
-        backgroundColor:"#6997DD",
-        justifyContent:"center",
-        alignItems:"center",
-        borderRadius:15,
-        marginTop:"8%",
-        marginLeft:"10%"
+    profileSettings: {
+        height: '5%',
+        width: '30%',
+        backgroundColor: '#6997DD',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 15,
+        marginTop: '8%',
+        marginLeft: '10%',
     },
-    profileSettingsText:{
-        color:"white"
-    }
+    profileSettingsText: {
+        color: 'white',
+    },
 });
-
-
-
-
-
-
-

@@ -182,20 +182,6 @@ export default function HomePage({}) {
               </Text>
             </View>
             <View style={styles.quick_actions_bars}>
-              <View style={styles.doctor_option}>
-                <View style={styles.doctor_image}>
-                  <Image
-                    style={styles.doctor_image_size}
-                    source={require("../images/doctorpicture.png")}
-                  ></Image>
-                </View>
-                <View>
-                  <Text style={styles.doctor_option_text_one}> Dr.Owais</Text>
-                  <Text style={styles.doctor_option_text_two}>
-                    Text Your Doctor{" "}
-                  </Text>
-                </View>
-              </View>
               <View style={styles.appoint_option}>
                 <View style={styles.appoint_image}>
                   <Image
@@ -204,10 +190,11 @@ export default function HomePage({}) {
                   ></Image>
                 </View>
                 <View>
-                  <Text style={styles.doctor_option_text_one}> Request</Text>
-                  <Text style={styles.appoint_option_text_two}>
-                    Appointment{" "}
+                  <Text style={styles.doctor_option_text_one}>
+                    {" "}
+                    Appointment
                   </Text>
+                  <Text style={styles.appoint_option_text_two}>Details </Text>
                 </View>
               </View>
               <Pressable
@@ -223,7 +210,7 @@ export default function HomePage({}) {
                 <View>
                   <Text style={styles.doctor_option_text_one}>
                     {" "}
-                    Top Specialists
+                    Request Appointment
                   </Text>
                   <Text style={styles.specialist_option_text_two}>
                     select among best{" "}
@@ -278,14 +265,17 @@ export default function HomePage({}) {
                 <Text style={styles.home_bottom_menu_text}>Appointment</Text>
               </Pressable>
 
-              <View style={styles.home_bottom_menu}>
+              <Pressable
+                onPress={() => navigation.navigate("ShowProfile")}
+                style={styles.home_bottom_menu}
+              >
                 <Ionicons
                   name="person-circle-outline"
                   size={28}
                   color="white"
                 />
-                <Text style={styles.chatbox_bottom_menu_text}>Home</Text>
-              </View>
+                <Text style={styles.chatbox_bottom_menu_text}>Profile</Text>
+              </Pressable>
             </View>
           </View>
         </ScrollView>

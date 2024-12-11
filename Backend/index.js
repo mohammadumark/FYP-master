@@ -6,6 +6,7 @@ const authRouter = require('./BackendFiles/AuthRoutes/AuthFile');
 const symptomRoutes = require('./BackendFiles/AuthRoutes/SymptomsRoute');
 const UploadImagesRoute = require('./BackendFiles/AuthRoutes/UploadImagesRoute');
 const appointmentRoutes = require('./BackendFiles/AuthRoutes/appointmentRoutes');
+const profileinformationRoute= require('./BackendFiles/AuthRoutes/ProfileInformationRoute');
 const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
@@ -20,6 +21,9 @@ app.use('/api/auth', authRouter);
 app.use('/api/symptoms', symptomRoutes);
 app.use('/api/upload', UploadImagesRoute);
 app.use('/api/appointments', appointmentRoutes); 
+app.use('/api/Profile', profileinformationRoute);
+
+
 
 // Create a database connection
 mongoose.connect('mongodb://localhost:27017/lt')

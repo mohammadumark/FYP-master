@@ -91,5 +91,24 @@ router.get("/:doctorId", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch appointments." });
   }
 });
+// Fetch appointments by doctorId
+// Fetch appointments by email
+router.get("/by-email/:email", async (req, res) => {
+  try {
+    const { email } = req.params;
+    const appointments = await Appointment.find({ email });
+
+    if (!appointments.length) {
+      return res.status(404).json({ error: "No appointments found for this email." });
+    }
+
+    res.status(200).json(appointments);
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    res.status(500).json({ error: "Failed to fetch appointments." });
+  }
+});
+
+
 
 module.exports = router;
