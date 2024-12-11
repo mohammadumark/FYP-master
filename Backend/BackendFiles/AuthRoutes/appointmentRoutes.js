@@ -15,9 +15,10 @@ router.post("/", async (req, res) => {
       location,
       message,
       patientId,
+      email, // Include email
     } = req.body;
 
-    if (!name || !doctorName || !doctorId || !date || !time || !patientId) {
+    if (!name || !doctorName || !doctorId || !date || !time || !patientId || !email) {
       return res.status(400).json({ error: "Please provide all required fields." });
     }
 
@@ -30,10 +31,10 @@ router.post("/", async (req, res) => {
       location,
       message,
       patientId,
+      email, // Include email
     });
 
     const savedAppointment = await newAppointment.save();
-
     res.status(201).json({
       message: "Appointment created successfully.",
       appointment: savedAppointment,

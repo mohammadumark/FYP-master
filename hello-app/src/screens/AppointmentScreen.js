@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
+import { useEmail } from './DataContext';
 
 const AppointmentScreen = ({ route, navigation }) => {
   const { doctorId, selectedDate, selectedTime, selectedDay } = route.params;
@@ -41,49 +42,41 @@ const AppointmentScreen = ({ route, navigation }) => {
     }
   }, [doctorId]);
 
+  const { email } = useEmail(); // Fetch the user's email
+
   // Handle appointment creation
   const handleAppointmentRequest = async () => {
     const appointmentData = {
       name,
       doctorName: doctorDetails?.username || "Unknown",
-      doctorId: doctorDetails?._id, // Include the doctorId here
+      doctorId: doctorDetails?._id,
       date: selectedDate,
       time: selectedTime,
       location: location || doctorDetails?.hospitalName || "Unknown",
       message,
       patientId,
-      status: "Pending", // Set the default status as "Pending"
+      email, // Add email to appointment data
     };
-  
-    console.log("Appointment Data:", appointmentData); // Log data for debugging
-  
+
     try {
       const response = await fetch("http://10.0.2.2:5001/api/appointments", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appointmentData),
       });
-  
-      // Check if the response is OK (status 2xx)
+
       if (!response.ok) {
-        const errorText = await response.text(); // Get error response text
+        const errorText = await response.text();
         throw new Error(`Error: ${response.statusText} - ${errorText}`);
       }
-  
-      // Parse the response JSON
+
       const data = await response.json();
-      console.log("Appointment created:", data);
-  
-      // Show success message or navigate to another screen
       Alert.alert("Success", "Appointment created successfully!");
     } catch (error) {
       console.error("Error creating appointment:", error);
       Alert.alert("Error", `Failed to create appointment: ${error.message}`);
     }
   };
-  
 
   if (isLoading) {
     return (
