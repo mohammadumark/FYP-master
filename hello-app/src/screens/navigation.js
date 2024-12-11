@@ -21,6 +21,7 @@ import Alert from './Alerts';
 import AppointmentScreen from './AppointmentScreen';
 import SymptomsNotMatched from './symptomNotMatch';
 import DoctorDetailsScreen from './DoctorDetailsScreen'; // New screen for doctor details
+import AppointmentDetails from './AppointmentDetails';
 
 const Drawer = createDrawerNavigator();
 const stack = createNativeStackNavigator();
@@ -52,6 +53,7 @@ export default function Navigation() {
       <stack.Screen name="Home" component={DrawerNavigator} />
       <stack.Screen name="specialists" component={TopSpecialist} />
       <stack.Screen name="DoctorDetails" component={DoctorDetailsScreen} />
+      <stack.Screen name="AppointmentDetails" component={AppointmentDetails} />
       <stack.Screen name="Appointment" component={AppointmentScreen} />
       <stack.Screen name="guide" component={GuideTip} />
       <stack.Screen name="setting" component={Settings} />

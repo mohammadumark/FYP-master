@@ -4,7 +4,7 @@ import Checkbox from 'expo-checkbox';
 import { useEmail } from './DataContext';
 import { useMatchSymptomsMutation} from '../../RTKBackend/ApiSlices/SymptomApliSlice';
 import { StyleSheet, Text, Alert, View, SafeAreaView, StatusBar, Platform, Image, Pressable } from 'react-native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SymptomsScreen({ }) {
     const [isChecked, setIsChecked] = useState(false);

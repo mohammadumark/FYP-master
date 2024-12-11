@@ -5,7 +5,7 @@ const cors = require('cors');
 const authRouter = require('./BackendFiles/AuthRoutes/AuthFile');
 const symptomRoutes = require('./BackendFiles/AuthRoutes/SymptomsRoute');
 const UploadImagesRoute = require('./BackendFiles/AuthRoutes/UploadImagesRoute');
-const appointmentRoutes = require('./BackendFiles/AuthRoutes/AppointmentRoutes');
+const appointmentRoutes = require('./BackendFiles/AuthRoutes/appointmentRoutes');
 const app = express();
 const dotenv = require('dotenv');
 dotenv.config();

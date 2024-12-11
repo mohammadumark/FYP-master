@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Symptom = require('../Models/Symptoms');
+const Symptom = require('../Models/Symtoms');
 const User = require('../Models/UserModel');
 
 // POST endpoint to add a new symptom
