@@ -44,7 +44,7 @@ const DoctorDetailsScreen = ({ route }) => {
 
   const fetchDoctorDetails = async () => {
     try {
-      const response = await fetch(`http://10.0.2.2:5000/api/doctors/${doctorId}`);
+      const response = await fetch(`http://192.168.137.1:5000/api/doctorss/${doctorId}`);
 
       if (!response.ok) {
         throw new Error("Doctor not found");
@@ -103,7 +103,7 @@ const DoctorDetailsScreen = ({ route }) => {
           <Image
             source={{
               uri: doctorDetails.profilePicture
-                ? `http://10.0.2.2:5000${doctorDetails.profilePicture}`
+                ? `http://192.168.137.1:5000${doctorDetails.profilePicture}`
                 : "https://via.placeholder.com/96",
             }}
             style={tw`w-24 h-24 rounded-full border-2 border-blue-500`}

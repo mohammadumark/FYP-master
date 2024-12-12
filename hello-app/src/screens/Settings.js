@@ -13,9 +13,7 @@ export default function Settings({ }) {
             <Pressable onPress={() =>navigation.navigate('ProfileSetting')} style={styles.profileSetting}>
                 <Text>Profile Setting</Text>
             </Pressable>
-            <Pressable onPress={() =>navigation.navigate('PasswordSetting')} style={styles.profileSetting}>
-                <Text>Password Setting</Text>
-            </Pressable>
+
         </SafeAreaView>
     );
 }

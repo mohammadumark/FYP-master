@@ -42,11 +42,7 @@ function DrawerNavigator() {
         component={GuideTip}
         options={{ headerShown: false }}
       />
-      <Drawer.Screen
-        name="Patient History"
-        component={PatientHistory}
-        options={{ headerShown: false }}
-      />
+     
       <Drawer.Screen
         name="Settings"
         component={Settings}

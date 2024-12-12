@@ -25,7 +25,7 @@ const AppointmentScreen = ({ route, navigation }) => {
   const fetchDoctorDetails = async (doctorId) => {
     try {
       const response = await fetch(
-        `http://10.0.2.2:5000/api/doctors/${doctorId}`
+        `http://192.168.137.1:5000/api/doctorss/${doctorId}`
       );
       const data = await response.json();
       setDoctorDetails(data);
@@ -59,7 +59,7 @@ const AppointmentScreen = ({ route, navigation }) => {
     };
 
     try {
-      const response = await fetch("http://10.0.2.2:5001/api/appointments", {
+      const response = await fetch("http://192.168.137.1:5001/api/appointments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appointmentData),

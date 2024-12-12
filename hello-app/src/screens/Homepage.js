@@ -182,21 +182,28 @@ export default function HomePage({}) {
               </Text>
             </View>
             <View style={styles.quick_actions_bars}>
-              <View style={styles.appoint_option}>
-                <View style={styles.appoint_image}>
-                  <Image
-                    style={styles.appoint_image_size}
-                    source={require("../images/appoint.png")}
-                  ></Image>
-                </View>
-                <View>
-                  <Text style={styles.doctor_option_text_one}>
-                    {" "}
-                    Appointment
-                  </Text>
-                  <Text style={styles.appoint_option_text_two}>Details </Text>
-                </View>
-              </View>
+              <Pressable
+              style={styles.appoint_option}
+              onPress={() => navigation.navigate("AppointmentDetails")}
+              >
+              <View style={styles.appoint_image}>
+              <Image
+                style={styles.appoint_image_size}
+                source={require("../images/appoint.png")}
+              ></Image>
+            </View>
+            <View>
+              <Text style={styles.doctor_option_text_one}>
+                {" "}
+                Appointment
+              </Text>
+              <Text style={styles.appoint_option_text_two}>Details </Text>
+            </View>
+            
+            </Pressable>
+            
+               
+              
               <Pressable
                 style={styles.appoint_option}
                 onPress={() => navigation.navigate("specialists")}
@@ -246,17 +253,17 @@ export default function HomePage({}) {
                 <Ionicons name="home-outline" size={24} color="white" />
                 <Text style={styles.home_bottom_menu_text}>Home</Text>
               </View>
-              <Pressable
+              {/* <Pressable
                 onPress={() => navigation.navigate("Alert")}
                 style={styles.home_bottom_menu}
               >
                 <AntDesign name="bells" size={24} color="white" />
                 <Text style={styles.home_bottom_menu_text}>Alerts</Text>
-              </Pressable>
-              <View style={styles.home_bottom_menu}>
+              </Pressable> */}
+              {/* <View style={styles.home_bottom_menu}>
                 <Fontisto name="email" size={28} color="white" />
                 <Text style={styles.chatbox_bottom_menu_text}>Chat</Text>
-              </View>
+              </View> */}
               <Pressable
                 onPress={() => navigation.navigate("AppointmentDetails")}
                 style={styles.home_bottom_menu}
@@ -476,12 +483,21 @@ const styles = StyleSheet.create({
     marginTop: 18,
     resizeMode: "contain",
   },
+  // bottom_menu: {
+  //   backgroundColor: "#6997DD",
+  //   height: 52,
+  //   flexDirection: "row",
+  //   marginTop: 55,
+
+  // },
   bottom_menu: {
     backgroundColor: "#6997DD",
     height: 52,
     flexDirection: "row",
     marginTop: 55,
-  },
+    justifyContent: "space-between",
+    paddingHorizontal: 20, // Adjust the value as needed
+},
   home_bottom_menu: {
     width: "20%",
     height: 52,
