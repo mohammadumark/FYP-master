@@ -67,6 +67,7 @@ export default function TopSpecialist({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Doctors List</Text>
       <FlatList
         data={doctors}
         keyExtractor={(item) => item._id}
@@ -102,6 +103,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 2 },
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginLeft: 25,
+    marginTop: 48,
+    marginBottom: 16,
   },
   profilePicture: {
     width: 64,

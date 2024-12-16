@@ -502,6 +502,8 @@ const styles = StyleSheet.create({
     width: "20%",
     height: 52,
     paddingTop: 4,
+    paddingBottom: 1,
+    marginBottom:0,
     // backgroundColor:"red",
     alignItems: "center",
     justifyContent: "center",
