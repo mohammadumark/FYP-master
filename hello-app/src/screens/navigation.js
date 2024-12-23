@@ -33,7 +33,7 @@ function DrawerNavigator() {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen
-        name="HOME"
+        name="Home"
         component={HomePage}
         options={{ headerShown: false }}
       />
@@ -44,8 +44,8 @@ function DrawerNavigator() {
       />
      
       <Drawer.Screen
-        name="Settings"
-        component={Settings}
+        name="Profile Settings"
+        component={ProfileSetting}
         options={{ headerShown: false }}
       />
     </Drawer.Navigator>

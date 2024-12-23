@@ -44,7 +44,6 @@ const AppointmentScreen = ({ route, navigation }) => {
 
   const { email } = useEmail(); // Fetch the user's email
 
-  // Handle appointment creation
   const handleAppointmentRequest = async () => {
     const appointmentData = {
       name,
@@ -57,27 +56,32 @@ const AppointmentScreen = ({ route, navigation }) => {
       patientId,
       email, // Add email to appointment data
     };
-
+  
     try {
       const response = await fetch("http://192.168.137.1:5001/api/appointments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appointmentData),
       });
-
+  
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Error: ${response.statusText} - ${errorText}`);
       }
-
+  
       const data = await response.json();
-      Alert.alert("Success", "Appointment created successfully!");
+      Alert.alert("Success", "Appointment created successfully!", [
+        {
+          text: "OK",
+          onPress: () => navigation.navigate("Home"), // Navigate to Homepage
+        },
+      ]);
     } catch (error) {
       console.error("Error creating appointment:", error);
       Alert.alert("Error", `Failed to create appointment: ${error.message}`);
     }
   };
-
+  
   if (isLoading) {
     return (
       <View style={styles.loader}>
@@ -185,9 +189,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#F3F4F6",
   },
   header: {
-    backgroundColor: "#3B82F6",
-    paddingVertical: 20,
-    paddingHorizontal: 16,
+    backgroundColor: "#6997DD",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    alignItems: "center",
   },
   headerText: {
     color: "#FFFFFF",

@@ -6,7 +6,6 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { useFetchNameQuery } from '../../RTKBackend/ApiSlices/RegisterApiSlice';
 import { useEmail } from './DataContext';
 import { useAddUserInfoMutation } from '../../RTKBackend/ApiSlices/ProfileInfoSlice';
-
 import {
     StyleSheet,
     Text,
@@ -19,7 +18,8 @@ import {
     TouchableOpacity,
     Pressable,
     ActivityIndicator,
-    Alert
+    Alert,
+    ScrollView,
 } from 'react-native';
 
 export default function ProfileSetting() {
@@ -43,21 +43,20 @@ export default function ProfileSetting() {
         setUsername(name);
     }, [name]);
 
-    const [addUserInfo, { isLoading, isSuccess, isError, error }] = useAddUserInfoMutation();
+    const [addUserInfo, { isLoading }] = useAddUserInfoMutation();
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
-        setShowPicker(Platform.OS === 'ios');
+        setShowPicker(false);
         setDate(currentDate);
     };
 
     const formatDate = (date) => {
         const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`; // Use backticks for template literals
+        return `${year}-${month}-${day}`;
     };
-    
 
     const handleSave = () => {
         const userInfo = {
@@ -72,65 +71,53 @@ export default function ProfileSetting() {
         };
 
         addUserInfo(userInfo);
-        if(addUserInfo(userInfo))
-        {
-            alert("succesfully saved details")
-            navigation.navigate('HOME');
-        }
+        Alert.alert("Success", "Details saved successfully!");
+        navigation.navigate('Home');
     };
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="auto" />
-            <View style={styles.historyHeader}>
-                <View style={styles.historyHeaderdata}>
-                    <View style={styles.historybackicon}>
-                        <AntDesign
-                            onPress={() => navigation.navigate('setting')}
-                            name="arrowleft"
-                            size={34}
-                            color="#FFFFFF"
-                        />
-                    </View>
-                    <View style={styles.historytext}>
-                        <Text style={styles.historytextChnging}>Profile Setting</Text>
-                    </View>
-                </View>
+            <View style={styles.header}>
+                <AntDesign
+                    onPress={() => navigation.goBack()}
+                    name="arrowleft"
+                    size={28}
+                    color="#FFFFFF"
+                />
+                <Text style={styles.headerTitle}>Profile Setting</Text>
             </View>
-            <View style={styles.patientImage}>
-                <View style={styles.patientImageBorder}>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View style={styles.profileImageContainer}>
                     <Image
-                        style={styles.patientImageSizing}
+                        style={styles.profileImage}
                         source={require('../images/doctor1.png')}
                     />
-                    <EvilIcons
-                        style={styles.changeimage}
-                        name="camera"
-                        size={24}
-                        color="black"
-                    />
+                    <TouchableOpacity style={styles.cameraIcon}>
+                        <EvilIcons name="camera" size={28} color="#fff" />
+                    </TouchableOpacity>
                 </View>
-            </View>
-            <View style={styles.profileinformationView}>
-                <View style={styles.profileSetting}>
-                    <Text style={styles.settingcurrentText}>User Name</Text>
+
+                <View style={styles.profileInputContainer}>
+                    <Text style={styles.label}>User Name</Text>
                     <TextInput
                         style={styles.input}
-                        onChangeText={setUsername}
                         value={username}
                         editable={false}
                     />
                 </View>
-                <View style={styles.profileSetting}>
-                    <Text style={styles.settingcurrentText}>Gender</Text>
+
+                <View style={styles.profileInputContainer}>
+                    <Text style={styles.label}>Gender</Text>
                     <TextInput
                         style={styles.input}
                         onChangeText={setGender}
                         value={gender}
                     />
                 </View>
-                <View style={styles.profileSetting}>
-                    <Text style={styles.settingcurrentText}>Date of Birth</Text>
+
+                <View style={styles.profileInputContainer}>
+                    <Text style={styles.label}>Date of Birth</Text>
                     <TouchableOpacity onPress={() => setShowPicker(true)}>
                         <TextInput
                             style={styles.input}
@@ -143,172 +130,145 @@ export default function ProfileSetting() {
                             value={date}
                             mode="date"
                             display="default"
-                            onChange={(event, selectedDate) => {
-                                onChange(event, selectedDate);
-                                if (Platform.OS === 'android') {
-                                    setShowPicker(false);
-                                }
-                            }}
+                            onChange={onChange}
                         />
                     )}
                 </View>
-                <View style={styles.AgeWeight}>
-                    <View style={styles.profileSetting2}>
-                        <Text style={styles.settingcurrentText}>Age</Text>
+
+                <View style={styles.row}>
+                    <View style={styles.halfInputContainer}>
+                        <Text style={styles.label}>Age</Text>
                         <TextInput
-                            style={styles.input2}
+                            style={styles.input}
                             onChangeText={setAge}
                             value={age}
                             keyboardType="numeric"
                         />
                     </View>
-                    <View style={styles.profileSetting2}>
-                        <Text style={styles.settingcurrentText}>Weight</Text>
+                    <View style={styles.halfInputContainer}>
+                        <Text style={styles.label}>Weight</Text>
                         <TextInput
-                            style={styles.input2}
+                            style={styles.input}
                             onChangeText={setWeight}
                             value={weight}
                             keyboardType="numeric"
                         />
                     </View>
                 </View>
-                <View style={styles.AgeWeight}>
-                    <View style={styles.profileSetting2}>
-                        <Text style={styles.settingcurrentText}>Height</Text>
+
+                <View style={styles.row}>
+                    <View style={styles.halfInputContainer}>
+                        <Text style={styles.label}>Height</Text>
                         <TextInput
-                            style={styles.input2}
+                            style={styles.input}
                             onChangeText={setHeight}
                             value={height}
                             keyboardType="numeric"
                         />
                     </View>
-                    <View style={styles.profileSetting2}>
-                        <Text style={styles.settingcurrentText}>Blood Group</Text>
+                    <View style={styles.halfInputContainer}>
+                        <Text style={styles.label}>Blood Group</Text>
                         <TextInput
-                            style={styles.input2}
+                            style={styles.input}
                             onChangeText={setBloodGroup}
                             value={blood}
                         />
                     </View>
                 </View>
-                <Pressable onPress={handleSave} style={styles.profileSettings}>
+
+                <Pressable onPress={handleSave} style={styles.saveButton}>
                     {isLoading ? (
                         <ActivityIndicator size="small" color="#fff" />
                     ) : (
-                        <Text style={styles.profileSettingsText}>Save</Text>
+                        <Text style={styles.saveButtonText}>Save</Text>
                     )}
                 </Pressable>
-            </View>
+            </ScrollView>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        height: '100%',
+        flex: 1,
+        backgroundColor: '#f5f5f5',
+    },
+    header: {
+        height: 60,
         backgroundColor: '#6997DD',
-    },
-    historyHeader: {
-        height: '14%',
-        marginTop: '5%',
-    },
-    historyHeaderdata: {
-        height: '40%',
         flexDirection: 'row',
-        paddingTop: '4%',
-        justifyContent: 'flex-start',
+        alignItems: 'center',
+        paddingHorizontal: 15,
+    },
+    headerTitle: {
+        color: '#FFFFFF',
+        fontSize: 20,
+        marginLeft: 15,
+    },
+    scrollContainer: {
+        padding: 20,
         alignItems: 'center',
     },
-    historybackicon: {
-        marginStart: '6%',
+    profileImageContainer: {
+        position: 'relative',
+        marginBottom: 20,
     },
-    historytext: {
-        marginStart: '19%',
-    },
-    historytextChnging: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontWeight: 'medium',
-    },
-    patientImage: {
-        height: '8%',
-        backgroundColor: 'white',
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
-    },
-    patientImageBorder: {
-        width: '24%',
-        marginTop: '-10%',
-        height: '145%',
-        margin: 'auto',
-        backgroundColor: 'white',
-        borderWidth: 2,
-        borderRadius: 100,
+    profileImage: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        borderWidth: 4,
         borderColor: '#6997DD',
     },
-    patientImageSizing: {
-        resizeMode: 'contain',
+    cameraIcon: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: '#6997DD',
+        borderRadius: 20,
+        padding: 5,
+    },
+    profileInputContainer: {
         width: '100%',
-        borderWidth: 2,
-        height: '100%',
+        marginBottom: 15,
     },
-    changeimage: {
-        marginLeft: '65%',
-        top: '-25%',
-    },
-    profileSetting: {
-        marginTop: '4%',
-    },
-    profileSetting2: {
-        marginTop: '4%',
-        width: '40%',
-        marginLeft: '5%',
+    label: {
+        fontSize: 14,
+        color: '#555',
+        marginBottom: 5,
     },
     input: {
         height: 50,
-        marginTop: '3%',
-        marginLeft: '10%',
-        width: '80%',
         borderWidth: 1,
-        borderRadius: 15,
-        padding: 10,
-        borderColor: '#777777',
-        backgroundColor: 'white',
+        borderColor: '#ddd',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        backgroundColor: '#fff',
     },
-    input2: {
-        height: 50,
-        marginTop: '3%',
-        marginLeft: '10%',
-        width: '90%',
-        borderWidth: 1,
-        borderRadius: 15,
-        padding: 10,
-        borderColor: '#777777',
-        backgroundColor: 'white',
-    },
-    profileinformationView: {
-        height: '78%',
-        backgroundColor: 'white',
-    },
-    settingcurrentText: {
-        paddingLeft: '12%',
-        fontSize: 12,
-    },
-    AgeWeight: {
+    row: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
         width: '100%',
+        marginBottom: 15,
     },
-    profileSettings: {
-        height: '5%',
-        width: '30%',
+    halfInputContainer: {
+        width: '48%',
+    },
+    saveButton: {
+        height: 50,
+        width: '60%',
         backgroundColor: '#6997DD',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 15,
-        marginTop: '8%',
-        marginLeft: '10%',
+        borderRadius: 25,
+        marginTop: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
     },
-    profileSettingsText: {
-        color: 'white',
+    saveButtonText: {
+        color: '#fff',
+        fontSize: 16,
     },
 });

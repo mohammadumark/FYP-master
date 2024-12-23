@@ -105,6 +105,7 @@ export default function Registration({ }) {
             <TextInput
               style={styles.input}
               onChange={e => handleName(e)}
+              placeholder='Your Name'
             />
             {name.length < 1 ? null : nameVerify ? (
               <Feather style={styles.circleadjust} name="check-circle" size={24} color="#6997DD" />

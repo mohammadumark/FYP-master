@@ -95,6 +95,7 @@ export default function Login() {
               style={styles.input}
               onChangeText={setPassword}
               secureTextEntry={true}
+              placeholder="*********"
             />
           </SafeAreaView>
         </View>
@@ -117,7 +118,9 @@ export default function Login() {
 
 const styles = StyleSheet.create({
   frame1: {
+    flex: 1,
     backgroundColor: "#F9F9F9",
+    paddingHorizontal: '5%',
     height: "100%",
   },
   container: {
@@ -150,7 +153,9 @@ const styles = StyleSheet.create({
   },
   lgsp_indicator_b1: {
     fontSize: 19,
-    color: "white"
+    color: "white",
+    textAlign: "center",
+  
   },
   lgsp_indicator_b2: {
     fontSize: 19,
@@ -168,6 +173,7 @@ const styles = StyleSheet.create({
     height: 35,
     alignItems: "center",
     borderRadius: 50,
+    borderBlockColor: "#F9F9F9",
 
   },
 
@@ -177,16 +183,17 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   input: {
-    height: 50,
+    height: 55, // Increase height to give more space
     marginTop: 10,
     marginLeft: 20,
     borderWidth: 1,
-    padding: 10,
+    padding: 15, // Reduce padding to prevent overlap
     borderColor: "#777777",
     backgroundColor: "white",
-    borderRadius: 100,
-
+    borderRadius: 30, // Adjust for a rounded look
+    textAlignVertical: "center", // Ensure text is centered vertically
   },
+  
   labeledit: {
     color: "#777777",
     paddingTop: 30,

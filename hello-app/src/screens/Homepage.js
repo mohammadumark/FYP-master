@@ -13,14 +13,10 @@ import {
   ImageBackground,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Fontisto } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-// import { Zocial } from '@expo/vector-icons';
 import { AntDesign } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useProfileImage } from "./ProfileImageUpdation";
 import {
   useUploadImageMutation,
   useFetchUserImageQuery,
@@ -44,12 +40,9 @@ export default function HomePage({}) {
   } = useFetchNameQuery(email, {
     skip: !email,
   });
-  //   useEffect(() => {
-  //     console.log("Email:", email);
-  //     console.log("Name Data:", nameData);
-  //   }, [email, nameData]);
+
   const name = nameData?.name || "User";
-  //   console.log("name is",name);
+ 
 
   const {
     data: userImage,
@@ -253,17 +246,6 @@ export default function HomePage({}) {
                 <Ionicons name="home-outline" size={24} color="white" />
                 <Text style={styles.home_bottom_menu_text}>Home</Text>
               </View>
-              {/* <Pressable
-                onPress={() => navigation.navigate("Alert")}
-                style={styles.home_bottom_menu}
-              >
-                <AntDesign name="bells" size={24} color="white" />
-                <Text style={styles.home_bottom_menu_text}>Alerts</Text>
-              </Pressable> */}
-              {/* <View style={styles.home_bottom_menu}>
-                <Fontisto name="email" size={28} color="white" />
-                <Text style={styles.chatbox_bottom_menu_text}>Chat</Text>
-              </View> */}
               <Pressable
                 onPress={() => navigation.navigate("AppointmentDetails")}
                 style={styles.home_bottom_menu}
@@ -483,21 +465,20 @@ const styles = StyleSheet.create({
     marginTop: 18,
     resizeMode: "contain",
   },
-  // bottom_menu: {
-  //   backgroundColor: "#6997DD",
-  //   height: 52,
-  //   flexDirection: "row",
-  //   marginTop: 55,
 
-  // },
   bottom_menu: {
+    position: "fixed", // Ensures the menu stays pinned to the bottom
+    bottom: 0, // Aligns the menu to the bottom of the screen
+    width: "100%", // Stretches the menu across the screen
     backgroundColor: "#6997DD",
-    height: 52,
     flexDirection: "row",
-    marginTop: 55,
-    justifyContent: "space-between",
-    paddingHorizontal: 20, // Adjust the value as needed
-},
+    justifyContent: "space-around",
+    paddingVertical: 10,
+    alignItems: "center",
+    zIndex: 10, // Ensures it is above other content
+  },
+  
+  
   home_bottom_menu: {
     width: "20%",
     height: 52,
@@ -520,6 +501,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   container: {
+    flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, // Adjust padding for Android
+    paddingBottom: 60, // Add space for the bottom bar height
   },
+  
 });
